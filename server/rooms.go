@@ -48,6 +48,7 @@ func (r *RoomMap) CreateRoom() string {
 
 	roomID := string(b)
 	r.Map[roomID] = []Participant{}
+	
 
 	return roomID
 }
@@ -61,6 +62,7 @@ func (r *RoomMap) InsertIntoRoom(roomID string, host bool, conn *websocket.Conn)
 
 	log.Println("Inserting into Room with RoomID: ", roomID)
 	r.Map[roomID] = append(r.Map[roomID], p);
+	log.Println("RoomMap: ", r.Map)
 }
 
 // DeleteRoom deletes the room with the roomID

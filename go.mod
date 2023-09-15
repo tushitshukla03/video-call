@@ -1,4 +1,4 @@
-module video-chat-app
+module video-call
 
 go 1.15
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"video-chat-app/server"
+	"video-call/server"
 	"log"
 	"net/http"
 )
