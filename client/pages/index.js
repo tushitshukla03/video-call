@@ -21,5 +21,5 @@ export default function Home(props) {
         <title>Call-Me</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-    <button onClick={create}></button></>
+    <button onClick={create}>Create Room</button></>
   )}

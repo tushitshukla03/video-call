@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+
 	"github.com/gorilla/websocket"
 )
 
@@ -26,7 +27,7 @@ type broadcastMsg struct {
 
 var broadcast = make(chan broadcastMsg)
 
-func broadcaster() {
+func Broadcaster() {
 	for {
 		msg := <-broadcast
 
@@ -52,6 +53,7 @@ func CreateRoomRequestHandler(w http.ResponseWriter, r *http.Request) {
 		RoomID string `json:"room_id"`
 	}
 
+
 	log.Println(AllRooms.Map)
 	json.NewEncoder(w).Encode(resp{RoomID: roomID})
 }
@@ -62,6 +64,8 @@ func JoinRoomRequestHandler(w http.ResponseWriter, r *http.Request) {
 	host, ok := r.URL.Query()["host"]
 	log.Println(roomID[0], host[0])
 	x, _ := strconv.ParseBool(host[0])
+
+	
 
 	if !ok {
 		log.Println("roomID missing in URL Parameters")
@@ -100,14 +104,31 @@ func JoinRoomRequestHandler(w http.ResponseWriter, r *http.Request) {
 	ws.Close()
 }
 
-func main() {
-	// Initialize your RoomMap and other server setup here
 
-	http.HandleFunc("/create-room", CreateRoomRequestHandler)
-	http.HandleFunc("/join-room", JoinRoomRequestHandler)
+func GetAllUser(w http.ResponseWriter, r *http.Request) {
+	roomID, ok := r.URL.Query()["roomID"]
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	// Start the broadcaster Goroutine
-	go broadcaster()
+	
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	
+
+	if !ok {
+		log.Println("roomID missing in URL Parameters")
+		http.Error(w, "roomID missing in URL Parameters", http.StatusBadRequest)
+		return
+	}
+
+	k  := AllRooms.Get(roomID[0])
+
+	type resp struct {
+		Participants []Participant
+	}
+	
+
+
+	json.NewEncoder(w).Encode(resp{k})
+
+	
+
 }
