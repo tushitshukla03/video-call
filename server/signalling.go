@@ -54,7 +54,7 @@ func CreateRoomRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	log.Println(AllRooms.Map)
+
 	json.NewEncoder(w).Encode(resp{RoomID: roomID})
 }
 
@@ -62,7 +62,7 @@ func CreateRoomRequestHandler(w http.ResponseWriter, r *http.Request) {
 func JoinRoomRequestHandler(w http.ResponseWriter, r *http.Request) {
 	roomID, ok := r.URL.Query()["roomID"]
 	host, ok := r.URL.Query()["host"]
-	log.Println(roomID[0], host[0])
+	
 	x, _ := strconv.ParseBool(host[0])
 
 	
@@ -94,7 +94,7 @@ func JoinRoomRequestHandler(w http.ResponseWriter, r *http.Request) {
 		msg.Client = ws
 		msg.RoomID = roomID[0]
 
-		log.Println(msg.Message)
+		
 
 		broadcast <- msg
 	}

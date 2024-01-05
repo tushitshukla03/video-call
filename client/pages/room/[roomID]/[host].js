@@ -37,8 +37,8 @@ const Room = (props) => {
     const peerRef = useRef();
     const webSocketRef = useRef();
     const router = useRouter();
-    const [isVideoMuted, setIsVideoMuted] = useState(false);
-    const [isAudioMuted, setIsAudioMuted] = useState(false);
+    const [isVideoMuted, setIsVideoMuted] = useState(true);
+    const [isAudioMuted, setIsAudioMuted] = useState(true);
 
     const openCamera = async () => {
         const allDevices = await navigator.mediaDevices.enumerateDevices();
@@ -64,18 +64,19 @@ const Room = (props) => {
     useEffect(() => {
         openCamera().then((stream) => {
             userVideo.current.srcObject = stream;
+            userVideo.current.muted = true;
             userStream.current = stream;
           
             if(router.isReady){
               const {roomID,host} = router.query;
-            console.log(roomID,host);
+            // console.log(roomID,host);
           webSocketRef.current = new WebSocket(
             `ws://localhost:8000/join?roomID=${roomID}&host=${host}`
           );
            
 
             webSocketRef.current.addEventListener("open", () => {
-              console.log(webSocketRef.current)
+            //   console.log(webSocketRef.current)
                 const cur = webSocketRef.current.send(JSON.stringify({ join: true }));
                 console.log("fsadcwfqf",cur)
             });
@@ -85,7 +86,7 @@ const Room = (props) => {
 
             webSocketRef.current.addEventListener("message", async (e) => {
                 const message = JSON.parse(e.data);
-                console.log("message is send")
+                console.log("message is send",message)
                 const response = await fetch(`http://localhost:8000/get?roomID=${roomID}`)
                 const resp = await response.json()
                 console.log(resp)
@@ -183,7 +184,7 @@ const Room = (props) => {
     const handleIceCandidateEvent = (e) => {
         console.log("Found Ice Candidate");
         if (e.candidate) {
-            console.log(e.candidate);
+            // console.log(e.candidate);
             webSocketRef.current.send(
                 JSON.stringify({ iceCandidate: e.candidate })
             );
@@ -192,7 +193,9 @@ const Room = (props) => {
 
     const handleTrackEvent = (e) => {
         console.log("Received Tracks");
+        // console.log(e,e.streams,"cscscscd")
         partnerVideo.current.srcObject = e.streams[0];
+        
     };
     
       // Toggle video stream
@@ -215,7 +218,7 @@ const Room = (props) => {
     return (
         <VideoCallContainer>
         <VideoContainer>
-            <Video autoPlay controls ref={userVideo}></Video>
+            <Video autoPlay  ref={userVideo}></Video>
             <ControlButton onClick={toggleVideo}>
                 {isVideoMuted ? "Unmute Video" : "Mute Video"}
             </ControlButton>
