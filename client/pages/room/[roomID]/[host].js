@@ -2,33 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
-const VideoCallContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-`;
 
-const VideoContainer = styled.div`
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-
-const Video = styled.video`
-    width: 100%;
-    max-width: 400px;
-    border: 1px solid #ccc;
-`;
-
-const ControlButton = styled.button`
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-`;
 
 const Room = (props) => {
     const userVideo = useRef();
