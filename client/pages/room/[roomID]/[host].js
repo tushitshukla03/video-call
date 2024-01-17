@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import styled from "styled-components";
-
 
 const Room = (props) => {
   const userVideo = useRef();
@@ -24,23 +22,20 @@ const Room = (props) => {
       .writeText(currentURL)
       .then(() => {
         console.log("URL copied to clipboard:", currentURL);
-        // Optionally, you can provide feedback to the user that the link was copied successfully
-        // For instance, you can show a notification or change the button text
       })
       .catch((error) => {
         console.error("Failed to copy URL to clipboard:", error);
-        // Handle any errors that may occur during copying
       });
   };
 
   const openCamera = async () => {
     const allDevices = await navigator.mediaDevices.enumerateDevices();
-    const cameras = allDevices.filter((device) => device.kind == "videoinput");
+    const cameras = allDevices.filter((device) => device.kind === "videoinput");
 
     const constraints = {
       audio: true,
       video: {
-        deviceId: cameras[0].deviceId,
+        deviceId: cameras.length > 0 ? cameras[0].deviceId : undefined,
       },
     };
 
@@ -59,28 +54,22 @@ const Room = (props) => {
 
       if (router.isReady) {
         const { roomID, host } = router.query;
-        // console.log(roomID,host);
         webSocketRef.current = new WebSocket(
-          `ws://localhost:8000/join?roomID=${roomID}&host=${host}`
+          `${process.env.NEXT_PUBLIC_REACT_APP_WS_URL}/join?roomID=${roomID}&host=${host}`
         );
 
         webSocketRef.current.addEventListener("open", () => {
-          //   console.log(webSocketRef.current)
           const cur = webSocketRef.current.send(JSON.stringify({ join: true }));
-          console.log("fsadcwfqf", cur);
+          console.log("WebSocket opened:", cur);
         });
+
         webSocketRef.current.addEventListener("close", () => {
           console.log("WebSocket Closed");
         });
 
         webSocketRef.current.addEventListener("message", async (e) => {
           const message = JSON.parse(e.data);
-          console.log("message is send", message);
-          const response = await fetch(
-            `http://localhost:8000/get?roomID=${roomID}`
-          );
-          const resp = await response.json();
-          console.log(resp);
+
           if (message.join) {
             callUser();
           }

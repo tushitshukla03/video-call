@@ -20,7 +20,7 @@ export default function Home(props) {
     e.preventDefault();
     
 
-    const response = await fetch('http://localhost:8000/create');
+    const response = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/create`);
     const {room_id} = await response.json();
     router.push(`/room/${room_id}/${true}`);
 
