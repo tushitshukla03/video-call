@@ -22,6 +22,7 @@ const Room = (props) => {
       .writeText(currentURL)
       .then(() => {
         console.log("URL copied to clipboard:", currentURL);
+        alert("URL copied to clipboard", currentURL);
       })
       .catch((error) => {
         console.error("Failed to copy URL to clipboard:", error);
@@ -134,7 +135,7 @@ const Room = (props) => {
   const createPeer = () => {
     console.log("Creating Peer Connection");
     const peer = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      iceServers: [{ urls: "stun:stun1.l.google.com:19302" },{ urls: "stun:stun2.l.google.com:19302" },{ urls: "stun:numb.viagenie.ca" },{ urls: "stun:stun.services.mozilla.com" },{ urls: "stun:stun.resiprocate.org" }],
     });
 
     peer.onnegotiationneeded = handleNegotiationNeeded;
@@ -201,7 +202,7 @@ const Room = (props) => {
         )}
         <div className="absolute bottom-0  flex bg-white">
           <p>Share link: {currentURL}</p>
-          <img src="/copy.png" alt="Google" className="h-6" />
+          <img src="/copy.png" alt="Google" className="h-6" onClick={copyToClipboard}/>
         </div>
       </div>
       <div className="absolute bottom-0 text-#040720 right-0 m-4">
@@ -211,13 +212,13 @@ const Room = (props) => {
             className="bg-blue-500 text-white px-4 py-2 rounded-md"
             onClick={toggleVideo}
           >
-            {isVideoMuted ? "Unmute Video" : "Mute Video"}
+            {isVideoMuted ? "Mute Video" : "Unmute Video"}
           </button>
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-md mt-3"
             onClick={toggleAudio}
           >
-            {isAudioMuted ? "Unmute Audio" : "Mute Audio"}
+            {isAudioMuted ? "Mute Audio" : "Unmute Audio"}
           </button>
         </div>
       </div>
